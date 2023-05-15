@@ -60,6 +60,8 @@ let tete_baissee (n:int) carte =
 let () =
   let n = read_int() in
   let string_to_char_list s = let rec aux acc = if acc = (String.length s) then [] else s.[acc]::(aux (acc+1)) in aux 0 in
-  let carte = Array.init n (fun _ -> read_line() |> string_to_char_list |> Array.of_list) in
+  (* ces deux versions marchent toutes les deux : il y a bien un "espace" à la fin de l'entrée ; l'on pouvait avoir un doute en copiant l'entrée sur le site dans notre presse-papier. *)
+  (* let carte = Array.init n (fun _ -> read_line() |> string_to_char_list |> Array.of_list) in *)
+  let carte = Array.init n (fun _ -> Scanf.scanf "%s " (fun s -> Array.init n (fun i -> s.[i]))) in
   (*print_carte carte;*)
   tete_baissee (n-1) carte
