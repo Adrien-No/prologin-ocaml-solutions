@@ -1,3 +1,5 @@
+### proof of correctness for optimisation 
+
 # Lemma :
 
 Let `S` be a vertex of the tree, `A` a vertex such that dist(S, A) is maximized. 
