@@ -1,7 +1,8 @@
+(* see README for recursive formula *)
+
 (*
 Don't pass the last performance test because of too much constant-complexity with pattern matching, see other file without pattern matching
-
- *)
+*)
 
 Printexc.record_backtrace true
 

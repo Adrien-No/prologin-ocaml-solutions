@@ -1,3 +1,5 @@
+(* see README for recursive formula *)
+
 Printexc.record_backtrace true
 
 type dist = Infinity | Int of int
