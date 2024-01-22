@@ -11,9 +11,9 @@ Algorithms and data structures to know :( [list here](https://prologin.org/forum
 
 - ok - https://prologin.org/train/2015/qualification/expert_itinerant
 
-- https://prologin.org/train/2016/semifinal/tete_baissee
+- ok - https://prologin.org/train/2016/semifinal/tete_baissee
 
-- https://prologin.org/train/2008/semifinal/pathfinder
+- ok - https://prologin.org/train/2008/semifinal/pathfinder
 
 
 
