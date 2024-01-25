@@ -1,20 +1,8 @@
-
-(**
-   @param n le nombre de types de parenthèses différentes
-   @param parenthesesOuvrantes tous les types de parenthèses ouvrantes existantes
-   @param parenthesesFermantes tous les types de parenthèses fermantes existantes
-   @param q le nombre de programmes à vérifier
-   @param programmes la liste des programmes à vérifier
-*)
-
 let affiche l =
   let len = List.length l in
   List.iteri (fun i b -> print_string (if b then "VALIDE" else "INVALIDE"); if i < len-1 then print_newline() ) l
 
-exception Impossible
 let phrasesValides n parOuvs parFers q programmes =
-  (** TODO Afficher, sur une ligne pour chaque programme, VALIDE si le
-  programme est valide, ou INVALIDE si le programme ne l'est pas.  *)
 
   let rec parse_prog (prog: char list) : bool =
     (* lit  *)
@@ -41,9 +29,6 @@ let phrasesValides n parOuvs parFers q programmes =
         | Some (i, par) -> apply (i+1) q ((i, par)::acc)
     in
     apply 0 parOuvs []
-    (* List.mapi (check_par prog) parOuvs (\* TODO contractable *\) *)
-    (* |> List.filter ((<>)None) *)
-    (* |> List.map Option.get *)
 
   and parse_fermante (i_par, prog) : bool =
     let parF = parFers.(i_par) in (* la ParFer qu'on cherche à reconnaître *)
