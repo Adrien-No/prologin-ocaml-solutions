@@ -1,4 +1,15 @@
 (* avec les sparses table *)
+(*
+D'après les spécifications du problème, R peut-être très grand. Deux possibilités :
+- Réduire au maximum les facteurs autres que R (c'est ce qu'on a essayé de faire avec les arbres segmentés) : on peut espérer obtenir une complexité en O(R * N)
+- Faire un algorithme indépendant de R, c'est ce qu'on va faire ici.
+
+On précalcule une "sparse table" immuable (à l'inverse de l'arbre segmenté dynamique) pour une complexité O(NlogN)
+Puis on construit des requêtes intelligentes sur le principe d'une fenêtre glissante (avec un peu d'arithmétique),
+donnant à chaque ville son nombre maximum de batiment cassé.
+finalement, complexité en O(NlogN + N) = O(NlogN)
+ *)
+
 open Printf
 
 (* ================================ SPARSE TABLE ================================ *)
@@ -38,7 +49,7 @@ let max_bet_opti t a b =
 
 let passages n r =
   (* renvoie le tableau du nombre de passages du serpent dans chaque ville *)
-  (* on fait attention à ne pas faire un algo en O(r) car r est grand (comme Quentin) *)
+  (* on fait attention à ne pas faire un algo en O(r) *)
   let tours_complets = r / n in
   let nb_max_last_turn = r - n * tours_complets in
   Array.init n (fun i -> if i < nb_max_last_turn then tours_complets + 1 else tours_complets)
