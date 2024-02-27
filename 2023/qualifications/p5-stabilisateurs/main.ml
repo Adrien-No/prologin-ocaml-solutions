@@ -1,14 +1,14 @@
-let cached f x y =
-  let cache = Hashtbl.create 64 in
-  let rec f' x y =
-    match Hashtbl.find_opt cache (x, y) with
-    | Some v -> v
-    | None ->
-      let v = f' x y in
-      Hashtbl.replace cache (x, y) (f v);
-      v
-  in
-  f' x y
+(* let cached f x y = *)
+(*   let cache = Hashtbl.create 64 in *)
+(*   let rec f' x y = *)
+(*     match Hashtbl.find_opt cache (x, y) with *)
+(*     | Some v -> v *)
+(*     | None -> *)
+(*       let v = f' x y in *)
+(*       Hashtbl.replace cache (x, y) (f v); *)
+(*       v *)
+(*   in *)
+(*   f' x y *)
 
 let stabiliteMaximale n0 k0 p accroches =
   let cache = Hashtbl.create 64 in

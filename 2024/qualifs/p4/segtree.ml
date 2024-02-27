@@ -1,3 +1,9 @@
+(* probleme, les arbres ne sont pas actualisés. *)
+(* probleme, noeuds internes incohérents *)
+
+(* Version où un arbre obtenu à partir d'un tableau est complet. *)
+(* On peut perdre un peu d'optimisation (mais pas en complexité) et il faut faire attention lors de l'indicage, à ne pas compter les indices dépassant l'initial, *)
+(* mais cela simplifie l'accès aux élements (situés aux racines) car les feuilles sont de même profondeur. *)
 Printexc.record_backtrace true
 open Printf
 type tree = Nil | Node of tree*int*tree
@@ -12,7 +18,7 @@ let noeud t1 t2 =
   | Node(_, x, _), Node(_, y, _) ->
     Node(t1, max x y, t2)
 
-let sup_pow2 n = (* appelé que 2 fois donc pas besoin d'opti *)
+let sup_pow2 n =
   let rec aux acc =
     if acc < n then
       aux (acc*2)
@@ -20,7 +26,17 @@ let sup_pow2 n = (* appelé que 2 fois donc pas besoin d'opti *)
   in
   aux 1
 
-let log2 x = (* appelé que 2 fois *)
+(* pas obligé de faire un cache.. *)
+let cachepow2 = Hashtbl.create 256
+let rec pow2 n =
+  if Hashtbl.mem cachepow2 n then Hashtbl.find cachepow2 n
+  else match n with
+      0 -> 1
+    | _ -> let v = 2 * pow2 (n-1) in
+      Hashtbl.add cachepow2 n v;
+      v
+
+let log2 x =
   let x' = float_of_int x in
   log x' /. log 2.
   |> int_of_float
@@ -55,13 +71,6 @@ let parcours tree n =
         loop r acc
   in
   List.rev (loop tree [])
-
-let execution_time f s x =
-  let t1 = Sys.time() in
-  let res = f x in
-  printf "time for %s: %f\n" s (Sys.time() -. t1);
-  res
-
 (* ======================================================================== *)
 
 (* ====================== RANGE QUERIES OPERATIONS ======================== *)
@@ -95,7 +104,7 @@ let tree_of_array a =
   in
   fst (concat_feuilles max_int feuille_list)
 
-let update_tree tree pow2 h i0 new_v =
+let update_tree tree h i0 new_v =
   (* h est la hauteur de l'arbre *)
   (* i est la position de l'élement à modifié càd le (i+1)-ème *)
   (* l'arbre est supposé complet (cf tree_of_array) *)
@@ -110,63 +119,52 @@ let update_tree tree pow2 h i0 new_v =
     | Node(l, x, r) ->
       if h = 1 then begin (* Printf.printf "%i: %i <- %i\n" i0 x new_v; *) Node(l, new_v, r) end
       else
-        if i < pow2.(h-2) then
+        if i < pow2 (h-2) then
           (* on descend à gauche, noeud permet aussi d'actualiser les noeuds internes. *)
           ((* Printf.printf "gauche i=%i pow=%i\n" i (pow2 (h-2)); *)
           noeud (loop l (h-1) i) r)
         else
           (* on descend à droite *)
           ((* Printf.printf "droite i=%i pow=%i\n" i (pow2 (h-2)); *)
-          noeud l (loop r (h-1) (i-pow2.(h-2))))
+          noeud l (loop r (h-1) (i-pow2(h-2))))
   in
   loop tree h i0
 
-let count_getmax_loop = ref 0
-let update_tic_getmax_loop() =
-  incr count_getmax_loop;
-  if !count_getmax_loop mod 10000000 = 0 then begin printf "getmax_loop: %i calls\n%!" !count_getmax_loop end
-
-let get_max tree temp_max n a b =
+let get_max tree n a b =
   (* on suppose a <= b <= max_pow2 *)
   (* let affiche = ref false in *)
   (* if a = 18 then (print_newline(); affiche := true); *)
 
-  let rec loop tree temp_max range i j =
-    (* update_tic_getmax_loop(); *)
+  let rec loop tree range i j =
     (* Printf.printf "range= %i, i= %i, j= %i\n" range i j; *)
     match tree with
       Nil -> 0
     (* | Node(Nil, x, Nil) -> if i = j then x else failwith "get_max: error" *)
-    (* TODO opti *)
-    | Node(_, x, _) when x <= temp_max -> temp_max
     | Node(l, x, r) when i = 0 && j >= range-1 ->
       (* if !affiche then Printf.printf "%i\n" x *) x
     | Node(l, x, r) ->
       let mid = range/2 in
       (* seulement à gauche *)
       if i < mid && j < mid then
-        loop l temp_max mid i j
+        loop l mid i j
         (* seulement à droite *)
       else if i >= mid && j >= mid then
-        loop r temp_max mid (i-mid) (j-mid)
+        loop r mid (i-mid) (j-mid)
         (* un bout à gauche et un bout à droite ; on remarque que on itère sur des arbres de hauteur<, on retrouve la propriété "au + deux noeud par étage" *)
       else
-        let max1 = loop l temp_max mid i mid in
-        loop r max1 mid 0 (j-mid)
-
+        let max1 = loop l mid i mid in
+        let max2 = loop r mid 0 (j-mid) in
+        (* if !affiche then printf "max1= %i, max2= %i\n" max1 max2; *)
+        max max1 max2
   in
 
-  let res = loop tree temp_max n a b in
+  let res = loop tree n a b in
   (* if !affiche then print_newline(); *)
   res
 (* ======================================================================== *)
 
 (* ============================= MAIN  =================================== *)
 
-let count_move = ref 0
-let update_tic_move() =
-  incr count_move;
-  if !count_move mod 1000000 = 0 then printf "move: %i calls\n%!" !count_move
 
 let batiments n r k villes =
   (** TODO Afficher le nombre de bâtiments cassés à chaque ville après les $R$
@@ -174,12 +172,8 @@ let batiments n r k villes =
 
   let len = sup_pow2 n in (* longueur pratique de l'arbre *)
   let h = log2 len + 1 in
-  printf "hauteur: %i\n%!" h;
-  let temp = ref 1 in
-  let pow2 = Array.init (h-1) (fun _ -> let v = !temp in temp := !temp * 2; v) in
 
   let move tree i =
-    (* update_tic_move(); *)
     (* simule un mouvement du serpent *)
     let get_max_cycle tree i =
       (* obtention du maximum *)
@@ -188,37 +182,33 @@ let batiments n r k villes =
           (* printf "divisé\n"; *)
           (* on divise la requête en deux plages *)
           (* entre i et n-1 *)
-          let m1 = get_max tree 0 len i (n-1) in
+          let m1 = get_max tree len i (n-1)
           (* entre 0 et (r+i-(n-1)) TODO et pas i ! *)
-          let m2 = get_max tree m1 len 0 (k+i-(n) -1) in
+          and m2 = get_max tree len 0 (k+i-n) -1) in
           max m1 m2
         end
       else
         begin
           (* printf "pas divisé\n"; *)
           (* une plage suffit *)
-          get_max tree 0 len i (i+k-1)
+          get_max tree len i (i+k-1)
         end
     in
     let new_v = get_max_cycle tree i in
     (* on renvoie l'arbre avec la valeur modifiée *)
-    update_tree tree pow2 h i new_v
+    update_tree tree h i new_v
   in
   let rec loop tree i cpt =
     (* renvoie une arbre représentant les batiments après r mouvements *)
     if cpt = r then tree
     else
-      let res = move tree i in
-      loop res ((i+1) mod n) (cpt+1)
+      loop (move tree i) ((i+1) mod n) (cpt+1)
   in
 
   (* ================ coeur du programme ================ *)
-
-  let tree0 = execution_time tree_of_array "tree_of_array" villes in
-
-  let tree = execution_time (loop tree0 0) "loop" 0 in
-
-  let batiments = execution_time (parcours tree) "parcours" n in
+  let tree0 = tree_of_array villes in
+  let tree = loop tree0 0 0 in
+  let batiments = parcours tree n in
   (* print_tree tree; *)
   batiments
 (* ==================================================== *)
@@ -231,17 +221,20 @@ let tests() =
   assert(batiments 5 2 4 [|2; 4; 3; 6; 8|] = [6; 8; 3; 6; 8]);
   assert(batiments 5 6 3 [|5; 4; 3; 2; 1|] = [5; 4; 3; 5; 5]);
   assert(batiments 10 6 3 (Array.init 10 ((+)1)) = [3; 4; 5; 6; 7; 8; 7; 8; 9; 10]);
-  assert(batiments 20 42 3 (Array.init 20 (function x when x < 10 -> x+1 | x -> 20-x)) = [7; 8; 7; 8; 9; 10; 10; 10; 10; 10; 10; 9; 8; 7; 6; 5; 4; 4; 5; 6]);
-
-  let t = tree_of_array (Array.init 16 Fun.id) in
-  get_max t 0 16 3 11
+  assert(batiments 20 42 3 (Array.init 20 (function x when x < 10 -> x+1 | x -> 20-x)) = [7; 8; 7; 8; 9; 10; 10; 10; 10; 10; 10; 9; 8; 7; 6; 5; 4; 4; 5; 6])
 
 let _ =
-  (* ignore (tests()); *)
-  ignore (batiments 10000 1000000 10000 (Array.init 10000 Fun.id));
-  printf "getmax_loop: %i calls\n%!" !count_getmax_loop
+  tests();
+  batiments 50000 5000000 50000 (Array.init 50000 Fun.id)
   (* let n = read_int () in *)
   (* let r = read_int () in *)
   (* let k = read_int () in *)
   (* let villes = (read_line () |> fun x -> if x = "" then [] else String.split_on_char ' ' x |> List.rev_map int_of_string |> List.rev) |> Array.of_list in *)
   (* batiments n r k villes |> print_int_list *)
+
+(* expected for test 5 :
+0 1 2 3 4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19
+7 8 7 8 9 10 10 10 10 10 10  9  8  7  6  5  4  4  5  6
+obtenu:
+7 8 7 8 9 10 10 10 10 10 10  9  8  7  6  5 10 10 10 10
+  *)

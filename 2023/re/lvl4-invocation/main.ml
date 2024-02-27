@@ -9,6 +9,19 @@ let get_descendants (t: trie) : int =
   | Node(x, false, _) -> x
 
 (* ================================================================ TRIE ================================================================ *)
+
+let spc n = String.init n (fun _ -> ' ') |> print_string
+let print_trie t =
+  let rec aux t space =
+    match t with
+      Nil -> ()
+    | Node(x, b, l) ->
+      spc space; Printf.printf "%i %b [\n" x b;
+      List.iter (fun (c, t) -> spc space; Printf.printf "%c\n" c; aux t (space+8)) l;
+      spc space; Printf.printf "]\n"
+  in
+  aux t 0
+
 let get_trie (vocab: char list list) =
   let t_vocab = Array.of_list vocab in
   let len = Array.length t_vocab in
@@ -18,12 +31,13 @@ let get_trie (vocab: char list list) =
         langage := (t_vocab.(i)@t_vocab.(j)@t_vocab.(i))::!langage
       done
     done;
-
-  let langage = !langage |> List.sort_uniq compare in
-  (* printf "\nlangage (%i elt, ) = [" (List.length langage); *)
-  (* List.iter (fun l -> Printf.printf "%s, " (l |> List.to_seq |> String.of_seq )) langage; *)
-  (* printf "]\n"; *)
+  (* TODO sort_uniq ? *)
+  let langage = !langage |> List.sort compare in
+  printf "\nlangage (%i elt, ) = [" (List.length langage);
+  List.iter (fun l -> Printf.printf "%s, " (l |> List.to_seq |> String.of_seq )) langage;
+  printf "]\n";
   let regroupe mots : (char option * char list list) list =
+    if List.exists ((=)[]) mots then printf "is_suffix\n";
     (* il faut mémoriser si un mot s'arrête sur ce noeud, càd un des mots est nul *)
     let groupes, dernier_groupe = List.fold_left (fun (acc, (temp_acc: char option * char list list)) mot ->
       match temp_acc, mot with
@@ -32,7 +46,7 @@ let get_trie (vocab: char list list) =
       | (Some c, l), c'::t when c <> c' -> (Some c, l ) :: acc, (Some c', [t]) (* ''             *)
       | (Some c, l), c'::t              ->                 acc, (Some c', t::l)(* when c = c'    *)
     )
-    (List.hd mots |> function [] -> [], (None, []) | c::t -> [], (Some c, [])) (* nous permet d'obtenir le groupe (None, []) ssi il y a un mot vide (car en vertue du `sort compare` il sera en premier)*)
+    (List.hd mots |> function [] -> (* printf "is_suffix\n"; *) [], (None, []) | c::t -> [], (Some c, [])) (* nous permet d'obtenir le groupe (None, []) ssi il y a un mot vide (car en vertue du `sort compare` il sera en premier)*)
     mots                                                                       (* le "t" sera répété donc pas besoin de le mettre maintenant *)
     in
     match groupes, dernier_groupe with
@@ -53,6 +67,7 @@ let get_trie (vocab: char list list) =
         (false, [])
         l
       in
+      (* if is_suffix then Printf.printf "================\n\nis suffix\n\n================"; *)
       let nb_descendants = enfants |> List.map (fun c -> snd c |> get_descendants) |> List.fold_left (+) 0 in
       Node (nb_descendants, is_suffix, enfants)
   in
@@ -75,6 +90,7 @@ let rec count_postfixs t prefix =
 
 let solve nb_prefixs prefixs nb_vocabs vocabulaire =
   let t = get_trie vocabulaire in
+  print_trie t;
   List.map (count_postfixs t) prefixs
   |> List.iteri (fun i x -> print_int x; if i < nb_prefixs-1 then print_newline())
 
