@@ -1,6 +1,6 @@
-"Solutions of some competitive programming problems from Prologin."
+# Algorithmics problems from [Prologin](https://prologin.org)
 
-> mainly solutions for first qualifications-exercises since 2022. 
+> Solutions (in OCaml) for first qualifications-exercises since 2022. 
 
 # Examples
 Solution of a query-problem with a [sparse table](https://github.com/Adrien-No/prologin-ocaml-solutions/tree/master/2024/qualifs/p4) of a [query-problem]
