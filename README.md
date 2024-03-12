@@ -2,7 +2,7 @@
 
 > Solutions (in OCaml) for some exercices including first regional-event-exercises since 2022. 
 
-# Examples ([a list here](https://prologin.org/forum/entrainement-3/les-algorithmes-et-structures-de-donnees-a-connaitre-950/))
+# Examples
 - Query problem :
   - [problem](https://prologin.org/train/2024/qualification/batiments), [solution with sparse table](https://github.com/Adrien-No/prologin-ocaml-solutions/tree/master/2024/qualifs/p4) 
 
@@ -27,3 +27,4 @@
 
   
 > Please note that there is solutions (in pseudo-code or python) for qualifications in [prologin website](https://prologin.org/archives/) but not for Regional Events.
+> A lot of exercices has been found [here](https://prologin.org/forum/entrainement-3/les-algorithmes-et-structures-de-donnees-a-connaitre-950/)
