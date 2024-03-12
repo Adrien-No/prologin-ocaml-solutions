@@ -8,18 +8,18 @@
 
 
 - graph problems :
-  - [problem](https://prologin.org/train/2015/semifinal/exploration_urbaine), [solution](https://github.com/Adrien-No/prologin-ocaml-solutions/tree/master/2015/er/lvl6-exploration_urbaine)
-  - [problem](https://prologin.org/train/2015/qualification/expert_itinerant), [solution with Floyd-Warshall](https://github.com/Adrien-No/prologin-ocaml-solutions/tree/master/2015/qualifications/expert-itinerant)
+  - [a problem](https://prologin.org/train/2015/semifinal/exploration_urbaine), [solution](https://github.com/Adrien-No/prologin-ocaml-solutions/tree/master/2015/er/lvl6-exploration_urbaine)
+  - [an other problem](https://prologin.org/train/2015/qualification/expert_itinerant), [solution with Floyd-Warshall](https://github.com/Adrien-No/prologin-ocaml-solutions/tree/master/2015/qualifications/expert-itinerant)
 
 - Search :
-  - [problem](https://prologin.org/train/2012/semifinal/chantier_intergalactique), [solution](https://github.com/Adrien-No/prologin-ocaml-solutions/blob/master/2016/er/tete_baissee.ml)
+  - [a problem](https://prologin.org/train/2012/semifinal/chantier_intergalactique), [solution](https://github.com/Adrien-No/prologin-ocaml-solutions/blob/master/2016/er/tete_baissee.ml)
 
 - Optimization :
   - [KP problem](https://prologin.org/train/2023/qualification/stabilisateurs), [solution](https://github.com/Adrien-No/prologin-ocaml-solutions/blob/master/2023/qualifications/p5-stabilisateurs/main.ml)
     
 - Dynamic Programming :
   - [Urgence Réseau](https://prologin.org/train/2010/semifinal/urgence_reseau), [solution](https://github.com/Adrien-No/prologin-ocaml-solutions/blob/master/2010/er/urgence-reseau-programmation-dynamique.ml) 
-  - [problem](https://prologin.org/train/2016/semifinal/tete_baissee), [solution](https://github.com/Adrien-No/prologin-ocaml-solutions/blob/master/2016/er/tete_baissee.ml)
+  - [a problem](https://prologin.org/train/2016/semifinal/tete_baissee), [solution](https://github.com/Adrien-No/prologin-ocaml-solutions/blob/master/2016/er/tete_baissee.ml)
 
 - Parser / Trie :
   - ["Invocation"](https://prologin.org/train/2023/semifinal/invocation), [partial solution](https://github.com/Adrien-No/prologin-ocaml-solutions/tree/master/2023/re/lvl4-invocation)
