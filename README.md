@@ -1,8 +1,10 @@
-Here you can find my solutions of some competitive programming problems from Prologin.
+# Solutions of some competitive programming problems from Prologin.
 
-There is mainly solutions for first qualifications-exercises since 2022. 
+> mainly solutions for first qualifications-exercises since 2022. 
 
-There is also solutions from chosen list, e.g :
+# Examples
+Solution of a query-problem with a [sparse table](https://github.com/Adrien-No/prologin-ocaml-solutions/tree/master/2024/qualifs/p4) of a [query-problem]
+
 
 Algorithms and data structures to know :( [list here](https://prologin.org/forum/entrainement-3/les-algorithmes-et-structures-de-donnees-a-connaitre-950/))
 - https://prologin.org/train/2015/semifinal/exploration_urbaine
