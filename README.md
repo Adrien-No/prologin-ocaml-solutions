@@ -27,4 +27,5 @@
 
   
 > Please note that there is solutions (in pseudo-code or python) for qualifications in [prologin website](https://prologin.org/archives/) but not for Regional Events.
+>
 > A lot of exercices has been found [here](https://prologin.org/forum/entrainement-3/les-algorithmes-et-structures-de-donnees-a-connaitre-950/)
