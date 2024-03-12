@@ -1,4 +1,4 @@
-# Solutions of some competitive programming problems from Prologin.
+"Solutions of some competitive programming problems from Prologin."
 
 > mainly solutions for first qualifications-exercises since 2022. 
 
